@@ -96,20 +96,7 @@ class Ledatronic(SmartPlugin):
         if self._pause_item:
             self._pause_item(True, self.get_fullname())
 
-        # this stops all schedulers the plugin has started.
-        # you can disable/delete the line if you don't use schedulers
         self.scheduler_remove_all()
-
-        # stop the asyncio eventloop and it's thread
-        # If you use asyncio, enable the following line
-        #self.stop_asyncio()
-
-        # If you called connect() on run(), disconnect here
-        # (remember to write a disconnect() method!)
-        #self.disconnect()
-
-        # also, clean up anything you set up in run(), so the plugin can be
-        # cleanly stopped and started again
 
     def parse_item(self, item):
         """
@@ -513,8 +500,9 @@ class Ledatronic(SmartPlugin):
         # loop through item list and get values from dict
         for item in device_item_list:
             item_config = self.get_item_config(item)
-            leda_data_point = item_config['leda_data_point']
-
+            leda_data_point = item_config.get('leda_data_point')
+            if leda_data_point is None:
+                continue
             value = self.parsed_data.get(leda_data_point)
             if value:
                 item_config['value'] = value
